@@ -1,0 +1,26 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "bilikit"
+version = "0.1.0"
+description = "视频分镜分析工具：感知去重抽画面、B-roll 自动识别、生成图文对照浏览页"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { file = "LICENSE" }
+keywords = ["video", "storyboard", "b-roll", "ffmpeg", "subtitle", "分镜"]
+dependencies = ["Pillow>=9.0"]
+
+[project.urls]
+Homepage = "https://github.com/YOUR_NAME/bilikit"
+Issues = "https://github.com/YOUR_NAME/bilikit/issues"
+
+[project.scripts]
+bilikit = "bilikit.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/bilikit"]
+
+[tool.hatch.build]
+include = ["src/bilikit/**/*.py", "src/bilikit/terms.txt"]

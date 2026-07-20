@@ -1,0 +1,28 @@
+# ── 私有覆盖模块：下载能力不随公开版发布 ──
+src/bilikit/download.py
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+
+# 产物与素材
+*.mp4
+*.srt
+*.jpg
+*.png
+!examples/**/*.jpg
+!examples/**/*.png
+浏览.html
+index.json
+broll/
+frames/
+sheet_*.jpg
+
+# 系统
+.DS_Store
+._*

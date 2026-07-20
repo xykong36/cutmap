@@ -1,0 +1,54 @@
+# ASR 术语归一化表（默认：AI / 科技类内容）
+#
+# 格式：  正则   =>   替换
+#   - 每行一条，# 开头为注释
+#   - 匹配不区分大小写
+#   - 用 \w 边界会在中英混排下失效（中文字符在 Python 里同属 \w），
+#     故一律用 (?<![A-Za-z0-9]) ... (?![A-Za-z0-9]) 作 ASCII 边界
+#
+# 自定义：用 --terms your_terms.txt 指定自己的表（完全替换默认表），
+#         或 BILIKIT_TERMS 环境变量。
+
+# ---- 模型 / 产品 ----
+open\s*cloud                                  => OpenClaw
+open\s*claw                                   => OpenClaw
+deep\s*s[iea]*c?k                             => DeepSeek
+deepseek                                      => DeepSeek
+(?<![A-Za-z0-9])grock(?![A-Za-z0-9])          => Grok
+(?<![A-Za-z0-9])grok(?![A-Za-z0-9])           => Grok
+詹姆(奶|乃|a|A|i)?                              => Gemini
+(?<![A-Za-z0-9])gemini(?![A-Za-z0-9])         => Gemini
+(?<![A-Za-z0-9])gbt(?![A-Za-z0-9])            => GPT
+(?<![A-Za-z0-9])gpt(?![A-Za-z0-9])            => GPT
+(?<![A-Za-z0-9])openai(?![A-Za-z0-9])         => OpenAI
+(?<![A-Za-z0-9])deepmind(?![A-Za-z0-9])       => DeepMind
+(?<![A-Za-z0-9])claude(?![A-Za-z0-9])         => Claude
+cod\s*code                                    => Claude Code
+cocold                                        => Claude Code
+(?<![A-Za-z0-9])kimi(?![A-Za-z0-9])           => Kimi
+
+# ---- 缩写大小写 ----
+(?<![A-Za-z0-9])ai(?![A-Za-z0-9])             => AI
+(?<![A-Za-z0-9])npu(?![A-Za-z0-9])            => NPU
+(?<![A-Za-z0-9])gpu(?![A-Za-z0-9])            => GPU
+(?<![A-Za-z0-9])cpu(?![A-Za-z0-9])            => CPU
+(?<![A-Za-z0-9])tpu(?![A-Za-z0-9])            => TPU
+(?<![A-Za-z0-9])mcp(?![A-Za-z0-9])            => MCP
+(?<![A-Za-z0-9])hdr(?![A-Za-z0-9])            => HDR
+(?<![A-Za-z0-9])dlss(?![A-Za-z0-9])           => DLSS
+(?<![A-Za-z0-9])esim(?![A-Za-z0-9])           => eSIM
+(?<![A-Za-z0-9])ppt(?![A-Za-z0-9])            => PPT
+(?<![A-Za-z0-9])app(?![A-Za-z0-9])            => App
+
+# ---- 设备 / 系统 ----
+(?<![A-Za-z0-9])iphone(?![A-Za-z0-9])         => iPhone
+(?<![A-Za-z0-9])ipad(?![A-Za-z0-9])           => iPad
+(?<![A-Za-z0-9])macbook(?![A-Za-z0-9])        => MacBook
+(?<![A-Za-z0-9])windows(?![A-Za-z0-9])        => Windows
+(?<![A-Za-z0-9])steam(?![A-Za-z0-9])          => Steam
+
+# ---- 刻意不收录 ----
+# 有歧义或属于说话人本人用词的，宁可不改：
+#   小龙虾 / 龙虾  某些 UP 主对 OpenClaw 的戏称，是本人措辞
+#   单独的 cloud   可能指 Claude，也可能真指云服务，规则无法区分
+#   克劳德         通用中文译名，保留
