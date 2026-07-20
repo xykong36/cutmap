@@ -86,7 +86,7 @@ def load_font(size: int):
     """跨平台加载一个粗体无衬线字体；全部失败则退回 PIL 内置位图字体"""
     from PIL import ImageFont
 
-    override = os.environ.get("BILIKIT_FONT")
+    override = os.environ.get("CUTMAP_FONT")
     paths = ([override] if override else []) + _FONT_CANDIDATES
     for p in paths:
         if p and os.path.isfile(p):

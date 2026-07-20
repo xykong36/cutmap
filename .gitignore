@@ -1,5 +1,5 @@
 # ── 私有覆盖模块：下载能力不随公开版发布 ──
-src/bilikit/download.py
+src/cutmap/download.py
 
 # Python
 __pycache__/

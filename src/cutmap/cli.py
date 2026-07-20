@@ -1,4 +1,4 @@
-"""bilikit 命令行入口"""
+"""cutmap 命令行入口"""
 from __future__ import annotations
 
 import argparse
@@ -50,7 +50,7 @@ def build_parser() -> argparse.ArgumentParser:
     desc = "视频分镜分析：抽画面 + 切 B-roll + 生成可浏览页面"
     if has_dl:
         desc = "B站视频分析：下载 + " + desc.split("：", 1)[1]
-    p = argparse.ArgumentParser(prog="bilikit", description=desc)
+    p = argparse.ArgumentParser(prog="cutmap", description=desc)
     p.add_argument("target",
                    help="视频文件 / 素材目录" + ("/ B站 URL 或 BV号" if has_dl else ""))
     p.add_argument("--srt", help="字幕文件（默认在同目录按同名查找）")

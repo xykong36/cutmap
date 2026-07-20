@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "bilikit"
+name = "cutmap"
 version = "0.1.0"
 description = "视频分镜分析工具：感知去重抽画面、B-roll 自动识别、生成图文对照浏览页"
 readme = "README.md"
@@ -13,14 +13,14 @@ keywords = ["video", "storyboard", "b-roll", "ffmpeg", "subtitle", "分镜"]
 dependencies = ["Pillow>=9.0"]
 
 [project.urls]
-Homepage = "https://github.com/YOUR_NAME/bilikit"
-Issues = "https://github.com/YOUR_NAME/bilikit/issues"
+Homepage = "https://github.com/xiangyukong/cutmap"
+Issues = "https://github.com/xiangyukong/cutmap/issues"
 
 [project.scripts]
-bilikit = "bilikit.cli:main"
+cutmap = "cutmap.cli:main"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/bilikit"]
+packages = ["src/cutmap"]
 
 [tool.hatch.build]
-include = ["src/bilikit/**/*.py", "src/bilikit/terms.txt"]
+include = ["src/cutmap/**/*.py", "src/cutmap/terms.txt"]

@@ -7,7 +7,7 @@
 #     故一律用 (?<![A-Za-z0-9]) ... (?![A-Za-z0-9]) 作 ASCII 边界
 #
 # 自定义：用 --terms your_terms.txt 指定自己的表（完全替换默认表），
-#         或 BILIKIT_TERMS 环境变量。
+#         或 CUTMAP_TERMS 环境变量。
 
 # ---- 模型 / 产品 ----
 open\s*cloud                                  => OpenClaw

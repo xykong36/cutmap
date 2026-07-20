@@ -24,8 +24,8 @@ FILLERS = [
 
 @lru_cache(maxsize=8)
 def load_terms(path: str | None = None) -> tuple[tuple[str, str], ...]:
-    """读术语表。优先级：显式参数 > BILIKIT_TERMS 环境变量 > 内置表"""
-    path = path or os.environ.get("BILIKIT_TERMS") or DEFAULT_TERMS
+    """读术语表。优先级：显式参数 > CUTMAP_TERMS 环境变量 > 内置表"""
+    path = path or os.environ.get("CUTMAP_TERMS") or DEFAULT_TERMS
     rules = []
     with open(path, encoding="utf-8") as f:
         for lineno, line in enumerate(f, 1):
