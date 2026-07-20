@@ -136,7 +136,9 @@ cutmap ./素材目录/                  # 目录内含 源片.mp4 + 字幕.srt
 **分镜画面** —— 每个不同画面配当时的字幕
 **B-roll 片段** —— 自动循环播放的片段（观感等同 GIF 墙）
 
-![B-roll](examples/broll.png)
+![B-roll 片段自动循环播放](examples/broll-demo.gif)
+
+<sub>B-roll 标签页的实际效果：片段自动循环播放，观感等同 GIF 墙，但底层是 MP4（体积仅为 GIF 的 1/24）</sub>
 
 共用能力：
 

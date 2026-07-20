@@ -143,7 +143,9 @@ clips sitting next to it. Two tabs:
 **Storyboard** — every distinct frame with its caption
 **B-roll** — auto-looping clips (reads like a GIF wall)
 
-![b-roll](https://raw.githubusercontent.com/xykong36/cutmap/main/examples/broll.png)
+![B-roll clips auto-looping](https://raw.githubusercontent.com/xykong36/cutmap/main/examples/broll-demo.gif)
+
+<sub>The B-roll tab in motion: clips auto-loop like a GIF wall, but they are MP4 under the hood — 1/24 the size of actual GIFs</sub>
 
 Shared behaviour:
 
