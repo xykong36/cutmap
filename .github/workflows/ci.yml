@@ -37,10 +37,12 @@ jobs:
       - name: Smoke test
         shell: bash
         run: |
-          for c in red green blue; do
-            ffmpeg -v error -f lavfi -i "color=c=$c:size=320x180:rate=10:duration=4" \
-                   -pix_fmt yuv420p "seg_$c.mp4"
-            echo "file 'seg_$c.mp4'" >> list.txt
+          # 必须用有空间结构的图案：dHash 转灰度后比较相邻像素明暗，
+          # 纯色图每次比较都相等 → 指纹全 0 → 红/绿/蓝互相无法区分
+          for pat in smptebars testsrc rgbtestsrc; do
+            ffmpeg -v error -f lavfi -i "$pat=size=320x180:rate=10:duration=4" \
+                   -pix_fmt yuv420p "seg_$pat.mp4"
+            echo "file 'seg_$pat.mp4'" >> list.txt
           done
           ffmpeg -v error -f concat -safe 0 -i list.txt -c copy sample.mp4
           printf '1\n00:00:00,000 --> 00:00:04,000\nhello grock\n\n2\n00:00:04,000 --> 00:00:08,000\ndeep sick\n' > sample.srt
@@ -51,7 +53,7 @@ jobs:
           python - <<'PY'
           import json
           idx = json.load(open('sample/index.json'))
-          assert idx['frame_count'] >= 3, f"三段纯色应产出至少3个画面, got {idx['frame_count']}"
+          assert idx['frame_count'] >= 3, f"三段不同图案应产出至少3个画面, got {idx['frame_count']}"
           assert any(f['subtitle'] for f in idx['frames']), "字幕未对齐到任何画面"
           br = json.load(open('sample/broll/broll.json'))
           assert br['count'] >= 1, "未切出任何 B-roll 片段"

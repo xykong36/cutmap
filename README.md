@@ -56,6 +56,16 @@ Measured on one 16-minute video: scene detection found **104** frames,
 perceptual dedup found **608**. One 25-second stretch that scene detection called
 a single shot actually contained three completely different pages.
 
+
+### A note on the algorithm's blind spot
+
+dHash compares **relative brightness between adjacent pixels**, so it measures spatial
+structure, not colour. Two different flat colours produce an identical (all-zero)
+fingerprint and cannot be told apart. Footage that is largely flat-coloured or
+near-black will therefore dedup more aggressively than you might expect.
+
+This is also why transition cards are detected by mean luminance rather than by hash.
+
 ---
 
 ## Install

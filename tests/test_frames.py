@@ -44,6 +44,39 @@ class TestDHash:
         assert frames.hamming(frames.dhash(pa), frames.dhash(pb)) > 0
 
 
+class TestDHashBlindSpot:
+    """dHash 只看空间结构，对整体颜色不敏感 —— 这是算法的固有性质
+
+    它比较的是「每行相邻像素谁更亮」。纯色图所有像素相等，
+    每次比较结果都一样，指纹恒为 0，因此任意两种纯色都无法区分。
+    实际影响：纯色卡、全黑/全白画面无法靠 dHash 区分，
+    转场卡的识别因此走亮度均值而非哈希。
+    """
+
+    def test_solid_colors_are_indistinguishable(self, img):
+        red = img("r.png", (255, 0, 0))
+        blue = img("b.png", (0, 0, 255))
+        assert frames.dhash(red) == frames.dhash(blue) == 0
+
+    def test_structure_is_what_matters(self, img):
+        # 同样是灰度均值相近的两张图，结构不同则指纹不同
+        import os
+        import tempfile
+        d = tempfile.mkdtemp()
+        a = Image.new("RGB", (64, 36), (0, 0, 0))
+        b = Image.new("RGB", (64, 36), (0, 0, 0))
+        for y in range(36):                      # a：左半白
+            for x in range(32):
+                a.putpixel((x, y), (255, 255, 255))
+        for y in range(18):                      # b：上半白
+            for x in range(64):
+                b.putpixel((x, y), (255, 255, 255))
+        pa, pb = os.path.join(d, "a.png"), os.path.join(d, "b.png")
+        a.save(pa)
+        b.save(pb)
+        assert frames.hamming(frames.dhash(pa), frames.dhash(pb)) > 0
+
+
 class TestHamming:
     @pytest.mark.parametrize("a,b,d", [(0, 0, 0), (0b1010, 0b1010, 0),
                                        (0b1111, 0b0000, 4), (0b1010, 0b0101, 4)])
