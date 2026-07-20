@@ -6,6 +6,7 @@
 
 [![简体中文](https://img.shields.io/badge/lang-简体中文-2b7489?style=flat-square)](README.md)
 [![English](https://img.shields.io/badge/lang-English-lightgrey?style=flat-square)](README.en.md)
+[![PyPI](https://img.shields.io/pypi/v/cutmap?style=flat-square&color=3775a9)](https://pypi.org/project/cutmap/)
 [![CI](https://github.com/xykong36/cutmap/actions/workflows/ci.yml/badge.svg)](https://github.com/xykong36/cutmap/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue?style=flat-square)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.9+-3776ab?style=flat-square&logo=python&logoColor=white)](https://www.python.org)

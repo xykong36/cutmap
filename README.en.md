@@ -4,10 +4,11 @@
 
 **Turn any video into a browsable, searchable storyboard — and auto-extract its B-roll.**
 
-[![简体中文](https://img.shields.io/badge/lang-简体中文-lightgrey?style=flat-square)](README.md)
-[![English](https://img.shields.io/badge/lang-English-2b7489?style=flat-square)](README.en.md)
+[![简体中文](https://img.shields.io/badge/lang-简体中文-lightgrey?style=flat-square)](https://github.com/xykong36/cutmap/blob/main/README.md)
+[![English](https://img.shields.io/badge/lang-English-2b7489?style=flat-square)](https://github.com/xykong36/cutmap/blob/main/README.en.md)
+[![PyPI](https://img.shields.io/pypi/v/cutmap?style=flat-square&color=3775a9)](https://pypi.org/project/cutmap/)
 [![CI](https://github.com/xykong36/cutmap/actions/workflows/ci.yml/badge.svg)](https://github.com/xykong36/cutmap/actions/workflows/ci.yml)
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue?style=flat-square)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue?style=flat-square)](https://github.com/xykong36/cutmap/blob/main/LICENSE)
 [![Python](https://img.shields.io/badge/python-3.9+-3776ab?style=flat-square&logo=python&logoColor=white)](https://www.python.org)
 [![No LLM](https://img.shields.io/badge/LLM-not%20required-success?style=flat-square)](#)
 
@@ -24,7 +25,7 @@ open video/浏览.html
 
 Everything runs locally through `ffmpeg` + `Pillow`. **No model calls, no API keys, no network.**
 
-![storyboard](examples/storyboard.png)
+![storyboard](https://raw.githubusercontent.com/xykong36/cutmap/main/examples/storyboard.png)
 
 <sub>Demo footage: [@林亦LYi](https://www.youtube.com/@lyi) — [《一个视频搞懂 DeepSeek V4！》](https://www.youtube.com/watch?v=WDQjRzVcX-A), all rights reserved by the creator</sub>
 
@@ -142,7 +143,7 @@ clips sitting next to it. Two tabs:
 **Storyboard** — every distinct frame with its caption
 **B-roll** — auto-looping clips (reads like a GIF wall)
 
-![b-roll](examples/broll.png)
+![b-roll](https://raw.githubusercontent.com/xykong36/cutmap/main/examples/broll.png)
 
 Shared behaviour:
 
@@ -157,7 +158,7 @@ Shared behaviour:
 
 Contact sheets are written separately, for scanning a whole video in a few images:
 
-![contact sheet](examples/contact-sheet.jpg)
+![contact sheet](https://raw.githubusercontent.com/xykong36/cutmap/main/examples/contact-sheet.jpg)
 
 ---
 
@@ -211,7 +212,7 @@ cutmap video.mp4 --terms my_terms.txt
 ```
 
 Format is one `regex => replacement` per line — see
-[`src/cutmap/terms.txt`](src/cutmap/terms.txt).
+[`src/cutmap/terms.txt`](https://github.com/xykong36/cutmap/blob/main/src/cutmap/terms.txt).
 
 **This is term normalisation, not proofreading.** It will not fix segmentation,
 grammar, or one-off errors — those need a language model, which is out of scope here.

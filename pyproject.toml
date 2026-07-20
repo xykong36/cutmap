@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "cutmap"
-version = "0.1.0"
+version = "0.1.1"
 description = "Turn any video into a browsable, searchable storyboard — and auto-extract its B-roll. Local ffmpeg + perceptual hashing, no LLM."
 readme = "README.en.md"   # PyPI 面向全球用户，用英文；GitHub 首页仍是中文
 requires-python = ">=3.9"
