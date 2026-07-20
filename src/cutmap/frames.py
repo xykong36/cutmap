@@ -135,7 +135,9 @@ def extract(video: str, outdir: str, srt: str | None = None, *,
 
     data = {
         "video": os.path.basename(outdir.rstrip("/")),
-        "source": video,
+        # 存绝对路径：后续 broll 直接拿它喂 ffmpeg，
+        # 存相对路径会导致换个 cwd 跑就找不到文件
+        "source": os.path.abspath(video),
         "method": "dense-sample + dHash dedup",
         "fps": fps, "hash_threshold": threshold,
         "frame_count": len(index), "frames": index,

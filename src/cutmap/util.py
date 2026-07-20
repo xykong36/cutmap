@@ -111,8 +111,8 @@ def parse_srt(path: str | None) -> list[tuple[float, float, str]]:
     cues = []
     raw = open(path, encoding="utf-8-sig").read()
     for block in re.split(r"\n\s*\n", raw.strip()):
-        lines = [l for l in block.strip().splitlines() if l.strip()]
-        tc = next((l for l in lines if "-->" in l), None)
+        lines = [ln for ln in block.strip().splitlines() if ln.strip()]
+        tc = next((ln for ln in lines if "-->" in ln), None)
         if not tc:
             continue
         text = " ".join(lines[lines.index(tc) + 1:]).strip()

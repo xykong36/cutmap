@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        python: ["3.9", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+
+      # 冒烟测试要真跑 ffmpeg
+      - name: Install ffmpeg (Linux)
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - name: Install ffmpeg (macOS)
+        if: runner.os == 'macOS'
+        run: brew install ffmpeg
+
+      - run: pip install -e ".[dev]"
+      - run: ruff check src tests
+      - run: pytest -q
+
+      # 端到端：合成一段视频 + 字幕，跑完整流水线
+      # 端到端：合成一段有真实画面切换的视频 + 字幕，跑完整流水线
+      - name: Smoke test
+        shell: bash
+        run: |
+          for c in red green blue; do
+            ffmpeg -v error -f lavfi -i "color=c=$c:size=320x180:rate=10:duration=4" \
+                   -pix_fmt yuv420p "seg_$c.mp4"
+            echo "file 'seg_$c.mp4'" >> list.txt
+          done
+          ffmpeg -v error -f concat -safe 0 -i list.txt -c copy sample.mp4
+          printf '1\n00:00:00,000 --> 00:00:04,000\nhello grock\n\n2\n00:00:04,000 --> 00:00:08,000\ndeep sick\n' > sample.srt
+          cutmap sample.mp4 --srt sample.srt
+          test -f sample/index.json
+          test -f sample/浏览.html
+          test -f sample/broll/broll.json
+          python - <<'PY'
+          import json
+          idx = json.load(open('sample/index.json'))
+          assert idx['frame_count'] >= 3, f"三段纯色应产出至少3个画面, got {idx['frame_count']}"
+          assert any(f['subtitle'] for f in idx['frames']), "字幕未对齐到任何画面"
+          br = json.load(open('sample/broll/broll.json'))
+          assert br['count'] >= 1, "未切出任何 B-roll 片段"
+          html = open('sample/浏览.html', encoding='utf-8').read()
+          assert 'Grok' in html, "术语归一化未生效"
+          print(f"✓ 画面 {idx['frame_count']} 个, B-roll {br['count']} 段")
+          PY
