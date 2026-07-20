@@ -1,11 +1,13 @@
 # 演示素材来源 · Demo footage attribution
 
-本目录下的截图均取自以下视频，**仅用于展示 cutmap 的输出效果，版权归原作者所有**。
+感谢 **[@林亦LYi](https://www.youtube.com/@lyi)** 的精彩内容 —— 本目录下的截图
+均取自他的视频，**仅用于展示 cutmap 的输出效果，版权归原作者所有**。
 若原作者希望移除，请提 issue，我会立即替换。
 
-All screenshots here are taken from the video below, used **solely to demonstrate
+With thanks to **[@林亦LYi](https://www.youtube.com/@lyi)** for the excellent source
+material. All screenshots here are taken from his video, used **solely to demonstrate
 cutmap's output**. All rights remain with the original creator.
-If the creator would like them removed, please open an issue and they will be replaced.
+If he would like them removed, please open an issue and they will be replaced.
 
 | | |
 |---|---|

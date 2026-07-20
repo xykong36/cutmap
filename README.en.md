@@ -273,9 +273,15 @@ Use downloaded material for personal study and research only.
 
 Built on [ffmpeg](https://ffmpeg.org) and [Pillow](https://python-pillow.org).
 
-Screenshots in this README come from **[@林亦LYi](https://www.youtube.com/@lyi)**'s video
-**[《一个视频搞懂 DeepSeek V4！》](https://www.youtube.com/watch?v=WDQjRzVcX-A)**,
-used solely to demonstrate this tool's output. All rights remain with the original creator.
+Special thanks to **[@林亦LYi](https://www.youtube.com/@lyi)**.
+
+This project started as an attempt to study the editing in his videos — dense cutting,
+interleaved infographics and animated demos. That is exactly the material naive
+interval-screenshotting handles worst, and it is what forced the perceptual-dedup
+approach in the first place. The screenshots in this README are from
+**[《一个视频搞懂 DeepSeek V4！》](https://www.youtube.com/watch?v=WDQjRzVcX-A)**, used solely to demonstrate this tool's
+output; all rights remain with the original creator. If he would prefer them removed,
+please open an issue and they will be replaced immediately.
 
 | | |
 |---|---|

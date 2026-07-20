@@ -259,9 +259,13 @@ cutmap 视频.mp4 --srt 字幕.srt
 
 基于 [ffmpeg](https://ffmpeg.org) 与 [Pillow](https://python-pillow.org) 构建。
 
-README 中的演示截图取自 **[@林亦LYi](https://www.youtube.com/@lyi)** 的视频
-**[《一个视频搞懂 DeepSeek V4！》](https://www.youtube.com/watch?v=WDQjRzVcX-A)**，
-仅用于展示本工具的输出效果，版权归原作者所有。
+特别感谢 UP 主 **[@林亦LYi](https://www.youtube.com/@lyi)**。
+
+本项目最初就是为了研究他视频里的剪辑手法而写的 —— 密集的画面切换、
+穿插的信息图与演示动画，正是"每隔 N 秒截一张"这种笨办法处理不了的素材，
+也因此逼出了感知去重这个思路。README 里的演示截图取自他的
+**[《一个视频搞懂 DeepSeek V4！》](https://www.youtube.com/watch?v=WDQjRzVcX-A)**，仅用于展示本工具的输出效果，
+版权归原作者所有。若原作者希望移除，请提 issue，我会立即替换。
 
 | | |
 |---|---|
