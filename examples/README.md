@@ -23,5 +23,4 @@ If he would like them removed, please open an issue and they will be replaced.
 | `storyboard.png` | 分镜画面 Tab（608 个画面） |
 | `broll.png` | B-roll 片段 Tab（49 段） |
 | `broll-demo.gif` | B-roll 片段自动循环播放的动态效果（页面实录） |
-| `storyboard-light.png` | 浅色模式 |
 | `contact-sheet.jpg` | 4×4 图墙 |
