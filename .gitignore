@@ -26,3 +26,6 @@ sheet_*.jpg
 # 系统
 .DS_Store
 ._*
+
+# 构建产物
+dist/

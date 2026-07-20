@@ -5,8 +5,8 @@ build-backend = "hatchling.build"
 [project]
 name = "cutmap"
 version = "0.1.0"
-description = "视频分镜分析工具：感知去重抽画面、B-roll 自动识别、生成图文对照浏览页"
-readme = "README.md"
+description = "Turn any video into a browsable, searchable storyboard — and auto-extract its B-roll. Local ffmpeg + perceptual hashing, no LLM."
+readme = "README.en.md"   # PyPI 面向全球用户，用英文；GitHub 首页仍是中文
 requires-python = ">=3.9"
 license = { file = "LICENSE" }
 keywords = ["video", "storyboard", "b-roll", "ffmpeg", "subtitle", "perceptual-hash", "分镜"]
