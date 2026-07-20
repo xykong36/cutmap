@@ -26,6 +26,8 @@ Everything runs locally through `ffmpeg` + `Pillow`. **No model calls, no API ke
 
 ![storyboard](examples/storyboard.png)
 
+<sub>Demo footage: [@林亦LYi](https://www.youtube.com/@lyi) — [《一个视频搞懂 DeepSeek V4！》](https://www.youtube.com/watch?v=WDQjRzVcX-A), all rights reserved by the creator</sub>
+
 ---
 
 ## Why not just screenshot every N seconds
@@ -270,7 +272,15 @@ Use downloaded material for personal study and research only.
 ## Credits
 
 Built on [ffmpeg](https://ffmpeg.org) and [Pillow](https://python-pillow.org).
-Demo footage from [@林亦LYi](https://space.bilibili.com/4401694) on Bilibili.
+
+Screenshots in this README come from **[@林亦LYi](https://www.youtube.com/@lyi)**'s video
+**[《一个视频搞懂 DeepSeek V4！》](https://www.youtube.com/watch?v=WDQjRzVcX-A)**,
+used solely to demonstrate this tool's output. All rights remain with the original creator.
+
+| | |
+|---|---|
+| Source video | <https://www.youtube.com/watch?v=WDQjRzVcX-A> |
+| Creator | YouTube <https://www.youtube.com/@lyi> · Bilibili <https://space.bilibili.com/4401694> |
 
 ## License
 

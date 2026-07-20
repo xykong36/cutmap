@@ -25,6 +25,8 @@ open 视频/浏览.html
 
 ![分镜浏览](examples/storyboard.png)
 
+<sub>演示素材：[@林亦LYi](https://www.youtube.com/@lyi) [《一个视频搞懂 DeepSeek V4！》](https://www.youtube.com/watch?v=WDQjRzVcX-A)，版权归原作者所有</sub>
+
 ---
 
 ## 为什么不是「每隔 N 秒截一张」
@@ -256,7 +258,15 @@ cutmap 视频.mp4 --srt 字幕.srt
 ## 致谢
 
 基于 [ffmpeg](https://ffmpeg.org) 与 [Pillow](https://python-pillow.org) 构建。
-演示素材来自 B 站 [@林亦LYi](https://space.bilibili.com/4401694)。
+
+README 中的演示截图取自 **[@林亦LYi](https://www.youtube.com/@lyi)** 的视频
+**[《一个视频搞懂 DeepSeek V4！》](https://www.youtube.com/watch?v=WDQjRzVcX-A)**，
+仅用于展示本工具的输出效果，版权归原作者所有。
+
+| | |
+|---|---|
+| 素材视频 | <https://www.youtube.com/watch?v=WDQjRzVcX-A> |
+| 作者频道 | YouTube <https://www.youtube.com/@lyi> · 哔哩哔哩 <https://space.bilibili.com/4401694> |
 
 ## License
 
