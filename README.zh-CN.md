@@ -67,7 +67,7 @@ pip install cutmap
 brew install ffmpeg                # macOS（Linux: apt install ffmpeg）
 
 cutmap 视频.mp4 --srt 字幕.srt      # 或直接 cutmap 视频.mp4（自动找同名 .srt）
-open 视频/浏览.html                # ← 用浏览器打开这个
+open 视频/browse.html              # ← 用浏览器打开这个
 ```
 
 就这样,你要的一切都在视频同名的文件夹里。
@@ -80,7 +80,7 @@ open 视频/浏览.html                # ← 用浏览器打开这个
 
 ```
 视频名/
-├── 浏览.html          ← 打开这个：交互式分镜页
+├── browse.html        ← 打开这个：交互式分镜页
 ├── frames/            每个不同画面一张，带 #序号 时间码 秒数 标注
 ├── sheet_01~NN.jpg    4×4 图墙，适合几张图扫完整片
 ├── index.json         画面时间戳 + 对齐字幕（可供其他程序消费）

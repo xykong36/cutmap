@@ -102,8 +102,8 @@ def build(outdir: str, terms: str | None = None, log=print) -> str:
 {broll_pane}
 <script>{JS}</script></body></html>
 """
-    out = os.path.join(outdir, "浏览.html")
+    out = os.path.join(outdir, "browse.html")
     open(out, "w", encoding="utf-8").write(page)
-    log(f"  ✓ 浏览.html ({os.path.getsize(out)//1024} KB, "
+    log(f"  ✓ browse.html ({os.path.getsize(out)//1024} KB, "
         f"分镜 {len(fcards)} + B-roll {len(bcards)})")
     return out

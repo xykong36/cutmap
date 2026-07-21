@@ -26,13 +26,13 @@ def _step(n: int, total: int, msg: str) -> None:
 def resolve(target: str, srt_opt: str | None):
     """输入 → (视频路径, 字幕路径或None, 工作目录)"""
     if os.path.isdir(target):
-        mp4 = os.path.join(target, "源片.mp4")
+        mp4 = os.path.join(target, "source.mp4")
         if not os.path.exists(mp4):
             cand = glob.glob(os.path.join(target, "*.mp4"))
             if not cand:
                 sys.exit(f"目录里没有 mp4: {target}")
             mp4 = max(cand, key=os.path.getsize)
-        srt = srt_opt or os.path.join(target, "字幕.srt")
+        srt = srt_opt or os.path.join(target, "subtitle.srt")
         return mp4, (srt if os.path.exists(srt) else None), target
 
     if os.path.isfile(target):

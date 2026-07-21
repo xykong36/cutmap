@@ -72,7 +72,7 @@ pip install cutmap
 brew install ffmpeg                # macOS   (Linux: apt install ffmpeg)
 
 cutmap video.mp4 --srt video.srt   # or just: cutmap video.mp4  (finds video.srt)
-open video/浏览.html               # ← open this in your browser
+open video/browse.html             # ← open this in your browser
 ```
 
 That's it. Everything you need is in the `video/` folder next to your file.
@@ -85,7 +85,7 @@ Output lands in a directory named after the video:
 
 ```
 video/
-├── 浏览.html          ← open this: the interactive storyboard
+├── browse.html        ← open this: the interactive storyboard
 ├── frames/            every distinct frame, labelled #index timecode seconds
 ├── sheet_01..NN.jpg   4×4 contact sheets for scanning at a glance
 ├── index.json         frame timestamps + aligned subtitles (machine readable)
