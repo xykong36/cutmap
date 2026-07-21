@@ -6,7 +6,7 @@ build-backend = "hatchling.build"
 name = "cutmap"
 version = "0.1.1"
 description = "Turn any video into a browsable, searchable storyboard — and auto-extract its B-roll. Local ffmpeg + perceptual hashing, no LLM."
-readme = "README.en.md"   # PyPI 面向全球用户，用英文；GitHub 首页仍是中文
+readme = "README.md"   # 英文主版，同时用于 PyPI 与 GitHub 首页；中文见 README.zh-CN.md
 requires-python = ">=3.9"
 license = { file = "LICENSE" }
 keywords = ["video", "storyboard", "b-roll", "ffmpeg", "subtitle", "perceptual-hash", "分镜"]

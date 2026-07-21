@@ -2,77 +2,82 @@
 
 # cutmap
 
-**把任意视频变成可浏览、可搜索的分镜表，并自动切出 B-roll 片段。**
+**Turn any video into a browsable, searchable storyboard — and auto-extract its B-roll.**
 
-[![简体中文](https://img.shields.io/badge/lang-简体中文-2b7489?style=flat-square)](README.md)
-[![English](https://img.shields.io/badge/lang-English-lightgrey?style=flat-square)](README.en.md)
+[![English](https://img.shields.io/badge/lang-English-2b7489?style=flat-square)](https://github.com/xykong36/cutmap/blob/main/README.md)
+[![简体中文](https://img.shields.io/badge/lang-简体中文-lightgrey?style=flat-square)](https://github.com/xykong36/cutmap/blob/main/README.zh-CN.md)
 [![PyPI](https://img.shields.io/pypi/v/cutmap?style=flat-square&color=3775a9)](https://pypi.org/project/cutmap/)
 [![CI](https://github.com/xykong36/cutmap/actions/workflows/ci.yml/badge.svg)](https://github.com/xykong36/cutmap/actions/workflows/ci.yml)
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue?style=flat-square)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue?style=flat-square)](https://github.com/xykong36/cutmap/blob/main/LICENSE)
 [![Python](https://img.shields.io/badge/python-3.9+-3776ab?style=flat-square&logo=python&logoColor=white)](https://www.python.org)
-[![无需大模型](https://img.shields.io/badge/大模型-不需要-success?style=flat-square)](#)
+[![No LLM](https://img.shields.io/badge/LLM-not%20required-success?style=flat-square)](#)
 
 </div>
 
-给它一个视频和一份字幕，得到一个单页 HTML：左边是原片播放器，右边是每一个不同的画面，
-每张配着当时说的话。点任意画面，播放器跳到那一刻；搜字幕，定位到对应画面。
+Give it a video and a subtitle file. Get back a single HTML page: the source player on
+the left, every distinct frame on the right, each captioned with what was being said.
+Click any frame to jump the player to that moment. Search the subtitles to locate a shot.
 
 ```bash
-cutmap 视频.mp4 --srt 字幕.srt
-open 视频/浏览.html
+cutmap video.mp4 --srt video.srt
+open video/浏览.html
 ```
 
-全程本地 `ffmpeg` + `Pillow`，**不调模型、不要 API key、不联网**。
+Everything runs locally through `ffmpeg` + `Pillow`. **No model calls, no API keys, no network.**
 
-![分镜浏览](examples/storyboard.png)
+![storyboard](https://raw.githubusercontent.com/xykong36/cutmap/main/examples/storyboard.png)
 
-<sub>演示素材：[@林亦LYi](https://www.youtube.com/@lyi) [《一个视频搞懂 DeepSeek V4！》](https://www.youtube.com/watch?v=WDQjRzVcX-A)，版权归原作者所有</sub>
+<sub>Demo footage: [@林亦LYi](https://www.youtube.com/@lyi) — [《一个视频搞懂 DeepSeek V4！》](https://www.youtube.com/watch?v=WDQjRzVcX-A), all rights reserved by the creator</sub>
 
 ---
 
-## 为什么不是「每隔 N 秒截一张」
+## Why not just screenshot every N seconds
 
-固定间隔采样既冗余又漏内容：口播段落 30 秒画面不动，会截出十张一样的图；
-快剪蒙太奇 3 秒切 5 个镜头，只截到 1 张。
+Interval sampling is both redundant and lossy. A 30-second talking-head passage yields
+ten identical stills; a fast montage cutting five shots in three seconds yields one.
 
-cutmap 换了个问法——不问「隔多久截一张」，而是问**「哪些画面彼此不同」**：
+cutmap asks a different question — not *"how often should I sample"* but
+**"which frames actually differ"**:
 
 ```
-密集采样  →  逐帧算感知哈希  →  与上一张保留帧比差异
-                             →  差异够大才留
+dense sample  →  perceptual hash each frame  →  compare against last kept frame
+                                             →  keep only if different enough
 ```
 
-静止段落自动坍缩成一张，画面一变就留一张。
+Static passages collapse to a single frame. Every visual change gets one.
 
-### 为什么不用 ffmpeg 自带的场景检测
+### Why not ffmpeg's built-in scene detection
 
-`select='gt(scene,0.3)'` 只识别**硬切**，两类内容它抓不到：
+`select='gt(scene,0.3)'` only catches **hard cuts**. Two things slip past it:
 
-1. **低对比度切换** —— 白底 PPT 切白底网页。整体亮度结构相近，差异分永远够不到阈值。
-2. **镜头内的内容演进** —— 文字逐行出现、图表动画增长、表格高亮移动。
-   按任何定义都不算「切镜头」，但视觉上确实是不同画面。
+1. **Low-contrast transitions** — white slide to white webpage. Similar overall
+   luminance structure, so the difference score never crosses the threshold.
+2. **Intra-shot evolution** — text appearing line by line, charts animating,
+   table rows highlighting. Not a "cut" by any definition, but visually distinct.
 
-实测同一个 16 分钟视频：场景检测得 **104** 个画面，感知去重得 **608** 个。
-其中一段 25 秒被场景检测判为「单个镜头」，实际包含 3 个完全不同的页面。
+Measured on one 16-minute video: scene detection found **104** frames,
+perceptual dedup found **608**. One 25-second stretch that scene detection called
+a single shot actually contained three completely different pages.
 
 
-### 算法的一个盲区
+### A note on the algorithm's blind spot
 
-dHash 比较的是**相邻像素之间的明暗关系**，衡量的是空间结构而非颜色。
-两张不同的纯色图会产生完全相同（全 0）的指纹，无法区分。
-因此大面积纯色或接近全黑的素材，去重会比预期更激进。
+dHash compares **relative brightness between adjacent pixels**, so it measures spatial
+structure, not colour. Two different flat colours produce an identical (all-zero)
+fingerprint and cannot be told apart. Footage that is largely flat-coloured or
+near-black will therefore dedup more aggressively than you might expect.
 
-转场卡的识别之所以走亮度均值而不是哈希，也是这个原因。
+This is also why transition cards are detected by mean luminance rather than by hash.
 
 ---
 
-## 安装
+## Install
 
 ```bash
 pip install cutmap
 ```
 
-需要系统 `PATH` 里有 **ffmpeg**：
+Requires **ffmpeg** on your `PATH`:
 
 ```bash
 brew install ffmpeg          # macOS
@@ -81,199 +86,210 @@ apt install ffmpeg           # Debian / Ubuntu
 
 ---
 
-## 使用
+## Usage
 
 ```bash
-cutmap 视频.mp4                    # 自动找同名 .srt
-cutmap 视频.mp4 --srt 字幕.srt
-cutmap ./素材目录/                  # 目录内含 源片.mp4 + 字幕.srt
+cutmap video.mp4                      # looks for video.srt alongside
+cutmap video.mp4 --srt subs.srt
+cutmap ./material-dir/                # dir containing 源片.mp4 + 字幕.srt
 ```
 
-产物落在与视频同名的目录里：
+Output lands in a directory named after the video:
 
 ```
-视频名/
-├── frames/            每个不同画面一张，带 #序号 时间码 秒数 标注
-├── sheet_01~NN.jpg    4×4 图墙，适合几张图扫完整片
-├── index.json         画面时间戳 + 对齐字幕（可供其他程序消费）
-├── broll/             切出的 B-roll 片段 + broll.json
-└── 浏览.html          ← 打开这个
+video/
+├── frames/            every distinct frame, labelled #index timecode seconds
+├── sheet_01..NN.jpg   4×4 contact sheets for scanning at a glance
+├── index.json         frame timestamps + aligned subtitles (machine readable)
+├── broll/             extracted B-roll clips + broll.json
+└── 浏览.html          ← open this
 ```
 
-### 参数
+### Options
 
-| 参数 | 说明 |
+| Flag | Meaning |
 |---|---|
-| `--threshold N` | 画面密度，越小越密：`6` 密 / `10` 默认 / `14` 疏 |
-| `--fps N` | 密集采样帧率（默认 2，即最细能分辨 0.5 秒） |
-| `--cols/--rows` | 图墙行列（默认 4×4） |
-| `--thumb-width` | 缩略图宽度 px（默认 480） |
-| `--seg-max N` | B-roll 单段上限秒数（默认 45） |
-| `--clip-format` | `mp4`（默认）/ `gif` / `webp` |
-| `--no-broll` | 跳过 B-roll 切片 |
-| `--no-frames` | 只留图墙，不留单帧 |
-| `--terms FILE` | 自定义字幕术语表 |
+| `--threshold N` | Frame density. Lower = denser. `6` dense / `10` default / `14` sparse |
+| `--fps N` | Dense sampling rate (default 2 — finest resolvable gap is 0.5s) |
+| `--cols/--rows` | Contact sheet grid (default 4×4) |
+| `--thumb-width` | Thumbnail width in px (default 480) |
+| `--seg-max N` | Max seconds per B-roll segment (default 45) |
+| `--clip-format` | `mp4` (default) / `gif` / `webp` |
+| `--no-broll` | Skip B-roll extraction |
+| `--no-frames` | Keep only contact sheets, drop individual frames |
+| `--terms FILE` | Custom subtitle term-normalisation table |
 
-### 密度怎么选
+### Picking a density
 
-实测曲线（969 秒视频，2fps 采样得 1936 帧）：
+Measured on a 969-second video (2 fps sampling → 1936 raw frames):
 
-| 阈值 | 保留帧 | 平均间隔 | 适合 |
+| Threshold | Kept | Avg gap | Good for |
 |---|---|---|---|
-| 6 | 892 | 1.1s | 完整还原每一步视觉变化（教程复盘） |
-| **10** | **597** | **1.6s** | **默认**，兼顾覆盖与可读 |
-| 14 | 463 | 2.1s | 风格研究、快速浏览 |
-| 24 | 241 | 4.0s | 只看大结构，接近传统分镜表 |
+| 6 | 892 | 1.1s | Reconstructing every visual step (tutorial walkthroughs) |
+| **10** | **597** | **1.6s** | **Default** — balances coverage and readability |
+| 14 | 463 | 2.1s | Style study, quick scanning |
+| 24 | 241 | 4.0s | Structure only, close to a traditional shot list |
 
-曲线是平缓的，没有天然分界点 —— 这是**审美选择，不是能算出最优解的技术参数**。
-
----
-
-## 浏览页
-
-单个自包含 HTML，CSS 和 JS 全部内联，只依赖同目录的图片与片段。两个 Tab：
-
-**分镜画面** —— 每个不同画面配当时的字幕
-**B-roll 片段** —— 自动循环播放的片段（观感等同 GIF 墙）
-
-![B-roll 片段自动循环播放](examples/broll-demo.gif)
-
-<sub>B-roll 标签页的实际效果：片段自动循环播放，观感等同 GIF 墙，但底层是 MP4（体积仅为 GIF 的 1/24）</sub>
-
-共用能力：
-
-- 顶部内嵌原片播放器，**点任意时间码或画面即跳到该时刻**（本地文件，不联网）
-- 字幕实时搜索，匹配的是**归一化后**的文本
-  （搜 `DeepSeek` 能命中 ASR 写成 `deep sick` 的画面）
-- 超长字幕折叠为 `…展开`
-- B-roll 只播放视口内的片段（IntersectionObserver）——
-  几十个视频同时解码会卡死浏览器
-- 跟随系统深色 / 浅色模式
-
-图墙单独输出，适合用几张图扫完整片：
-
-![图墙](examples/contact-sheet.jpg)
+The curve is smooth — there is no natural breakpoint. This is an **aesthetic choice,
+not a parameter with a computable optimum.**
 
 ---
 
-## B-roll 自动识别
+## The browse page
 
-三条纯规则把画面分成三类，不需要模型：
+One self-contained HTML file. All CSS and JS inlined; only depends on the images and
+clips sitting next to it. Two tabs:
 
-| 类别 | 判据 |
+**Storyboard** — every distinct frame with its caption
+**B-roll** — auto-looping clips (reads like a GIF wall)
+
+![B-roll clips auto-looping](https://raw.githubusercontent.com/xykong36/cutmap/main/examples/broll-demo.gif)
+
+<sub>The B-roll tab in motion: clips auto-loop like a GIF wall, but they are MP4 under the hood — 1/24 the size of actual GIFs</sub>
+
+Shared behaviour:
+
+- Embedded source player up top — **click any timecode or frame to seek there**
+  (local file, no network)
+- Live subtitle search, matching against the **normalised** text
+  (searching `DeepSeek` finds frames whose ASR wrote `deep sick`)
+- Long captions collapse behind `…expand`
+- B-roll clips play only while in viewport (IntersectionObserver) — dozens of
+  simultaneously decoding videos will freeze a browser
+- Follows system light / dark mode
+
+Contact sheets are written separately, for scanning a whole video in a few images:
+
+![contact sheet](https://raw.githubusercontent.com/xykong36/cutmap/main/examples/contact-sheet.jpg)
+
+---
+
+## B-roll detection
+
+Frames are sorted into three buckets by three plain rules — no model involved:
+
+| Bucket | Rule |
 |---|---|
-| **主镜头** | 跨度超过全片 50% 且反复出现的高度相似画面簇 —— 即固定机位 |
-| **转场卡** | 亮度均值低于 8（纯黑）或高于 245（纯白） |
-| **B-roll** | 其余 |
+| **Main shot** | A cluster of near-identical frames recurring across >50% of the runtime — i.e. a locked-off camera |
+| **Transition card** | Mean luminance below 8 (black) or above 245 (white) |
+| **B-roll** | Everything else |
 
-某期实测：B-roll 49 段 / 731s (75.5%)，主镜头 39 段 / 217s (22.4%)，
-转场 16 段 / 20s (2.1%)。
+Measured on one episode: B-roll 49 segments / 731s (75.5%),
+main shot 39 / 217s (22.4%), transitions 16 / 20s (2.1%).
 
-纯屏幕录制、没有口播机位的视频会优雅降级——找不到主镜头，
-全部归为 B-roll，靠 `--seg-max` 保证不会糊成一整坨。
+Screencast-style videos with no talking head degrade gracefully — no main shot is
+found, everything becomes B-roll, and `--seg-max` keeps it segmented.
 
-### 片段格式
+### Clip format
 
-同一个 9 秒片段：
+Same nine-second segment:
 
-| 格式 | 体积 | 备注 |
+| Format | Size | Note |
 |---|---|---|
-| GIF 10fps | 1.96 MB | 只有 256 色，渐变有明显色带 |
-| WebP | 0.39 MB | 折中 |
-| **MP4** | **0.08 MB** | **默认**，比 GIF 小 24 倍且画质更好 |
+| GIF 10fps | 1.96 MB | 256 colours; visible banding on gradients |
+| WebP | 0.39 MB | Middle ground |
+| **MP4** | **0.08 MB** | **Default** — 24× smaller than GIF, better quality |
 
-页面里 MP4 设 `loop muted`，观感与 GIF 无异。
-只有要贴进聊天软件或笔记工具时，才需要 `--clip-format gif`。
+MP4 with `loop muted` is visually indistinguishable from a GIF in the page.
+Reach for `--clip-format gif` only when pasting into chat apps or note tools.
 
 ---
 
-## 字幕术语归一化
+## Subtitle term normalisation
 
-ASR 对专有名词的识别经常面目全非。内置术语表做归一化：
+ASR mangles proper nouns. A built-in table normalises them:
 
 ```
 大家对deep sick新模型的期待值   →   大家对DeepSeek新模型的期待值
 用grock测试                    →   用Grok测试
 ```
 
-真正的价值在**搜索**：搜 `DeepSeek` 能命中所有被转写成 `deep sick` 的画面。
+The real payoff is **search**: querying `DeepSeek` finds every frame whose subtitle
+was transcribed as `deep sick`.
 
-默认表面向 AI / 科技类内容。可自带词表：
-
-```bash
-cutmap 视频.mp4 --terms 我的词表.txt
-```
-
-格式是每行一条 `正则 => 替换`，见 [`src/cutmap/terms.txt`](src/cutmap/terms.txt)。
-
-**这是术语归一化，不是校对。** 它修不了断句、语法和低频错词 ——
-那些需要大模型，不在本工具范围内。
-
----
-
-## 踩过的坑
-
-开发过程中遇到的问题，多数**不报错、不崩溃，只是悄悄产出错误结果**：
-
-**正则 `\b` 在中英混排下失效**
-中文字符在 Python 里同属 `\w`，`用grock测试` 中 `用` 和 `g` 之间不存在单词边界，
-`\bgrock\b` 永远匹配不到。术语表统一改用 `(?<![A-Za-z0-9])…(?![A-Za-z0-9])`。
-
-**纯色帧不能用标准差判定**
-黑场转场卡上通常烧录着白色字幕，标准差被拉到 23~33，远高于「纯色」阈值。
-应改用亮度均值，且阈值要收紧（`<8`）——
-放宽到 `<25` 会把偏暗的正常画面也误判成转场。
-
-**取字幕的时间窗口不能重叠**
-若为避免空字幕而加「向前回看」，相邻帧会认领同一条字幕，
-跨帧拼接时出现整句重复。故拆成两个字段：
-`subtitle`（显示用，允许重复）与 `subtitle_own`（拼接用，严格半开区间）。
-
-**ffmpeg concat 的相对路径按列表文件所在目录解析**
-拼图墙的文件列表里必须写绝对路径。
-
-**`-v error` 会吞掉 `showinfo` 的输出**
-用 ffmpeg 做统计时若带了 `-v error`，结果会静默全为 0。
-
-**多线程下载在 exFAT 上会写坏文件**（如果你自己抓素材）
-预分配后在多个偏移并发写，在 exFAT + USB 上产出「大小正确、内容错误」的文件，
-表现为 `moov atom not found`。先下到本机磁盘再搬运即可。
-
----
-
-## 素材从哪来
-
-cutmap 不做下载，只处理本地文件。
-
-B 站视频可用 [BBDown](https://github.com/nilaoda/BBDown)，
-它默认会把字幕混流进 mp4，取出来一并交给 cutmap：
+The default table targets AI / tech content. Bring your own:
 
 ```bash
-BBDown <BV号> --skip-ai false
-ffmpeg -i 视频.mp4 -map 0:m:language:chi 字幕.srt
-cutmap 视频.mp4 --srt 字幕.srt
+cutmap video.mp4 --terms my_terms.txt
 ```
 
-请遵守素材来源平台的服务条款与著作权法律，下载内容仅用于个人学习研究。
+Format is one `regex => replacement` per line — see
+[`src/cutmap/terms.txt`](https://github.com/xykong36/cutmap/blob/main/src/cutmap/terms.txt).
+
+**This is term normalisation, not proofreading.** It will not fix segmentation,
+grammar, or one-off errors — those need a language model, which is out of scope here.
 
 ---
 
-## 致谢
+## Troubleshooting
 
-基于 [ffmpeg](https://ffmpeg.org) 与 [Pillow](https://python-pillow.org) 构建。
+Bugs hit while building this. Most of them **never raised an error** — they just
+quietly produced wrong output:
 
-特别感谢 UP 主 **[@林亦LYi](https://www.youtube.com/@lyi)**。
+**`\b` word boundaries fail in mixed CJK/Latin text**
+CJK characters are `\w` in Python, so in `用grock测试` there is no boundary between
+`用` and `g`. `\bgrock\b` never matches. The term table uses
+`(?<![A-Za-z0-9])…(?![A-Za-z0-9])` instead.
 
-本项目最初就是为了研究他视频里的剪辑手法而写的 —— 密集的画面切换、
-穿插的信息图与演示动画，正是"每隔 N 秒截一张"这种笨办法处理不了的素材，
-也因此逼出了感知去重这个思路。README 里的演示截图取自他的
-**[《一个视频搞懂 DeepSeek V4！》](https://www.youtube.com/watch?v=WDQjRzVcX-A)**，仅用于展示本工具的输出效果，
-版权归原作者所有。若原作者希望移除，请提 issue，我会立即替换。
+**Flat frames can't be detected by standard deviation**
+Black transition cards usually have burned-in white subtitles, pushing stddev to
+23–33 — far above any "flat colour" threshold. Use mean luminance, and keep it tight
+(`<8`): loosening to `<25` misclassifies merely-dark footage as transitions.
+
+**Subtitle time windows must not overlap**
+Adding a look-back to avoid empty captions makes adjacent frames claim the same cue,
+producing duplicated sentences when concatenated. Hence two fields:
+`subtitle` (display, may repeat) and `subtitle_own` (concatenation, strict half-open).
+
+**ffmpeg concat resolves relative paths against the list file's directory**
+Contact sheet file lists must contain absolute paths.
+
+**`-v error` suppresses `showinfo` output**
+Any ffmpeg-based statistics gathered with `-v error` silently come back as zero.
+
+**Multi-threaded downloads corrupt files on exFAT** (if you fetch footage yourself)
+Pre-allocating and writing at multiple offsets over exFAT-on-USB yields files with
+the right size and wrong contents — `moov atom not found`. Download to local disk,
+then move.
+
+---
+
+## Getting footage
+
+cutmap does not download anything — it works on local files.
+
+For Bilibili, [BBDown](https://github.com/nilaoda/BBDown) muxes subtitles into the mp4;
+pull them out and hand both to cutmap:
+
+```bash
+BBDown <BV-id> --skip-ai false
+ffmpeg -i video.mp4 -map 0:m:language:chi subs.srt
+cutmap video.mp4 --srt subs.srt
+```
+
+Respect the terms of service and copyright of wherever your footage comes from.
+Use downloaded material for personal study and research only.
+
+---
+
+## Credits
+
+Built on [ffmpeg](https://ffmpeg.org) and [Pillow](https://python-pillow.org).
+
+Special thanks to **[@林亦LYi](https://www.youtube.com/@lyi)**.
+
+This project started as an attempt to study the editing in his videos — dense cutting,
+interleaved infographics and animated demos. That is exactly the material naive
+interval-screenshotting handles worst, and it is what forced the perceptual-dedup
+approach in the first place. The screenshots in this README are from
+**[《一个视频搞懂 DeepSeek V4！》](https://www.youtube.com/watch?v=WDQjRzVcX-A)**, used solely to demonstrate this tool's
+output; all rights remain with the original creator. If he would prefer them removed,
+please open an issue and they will be replaced immediately.
 
 | | |
 |---|---|
-| 素材视频 | <https://www.youtube.com/watch?v=WDQjRzVcX-A> |
-| 作者频道 | YouTube <https://www.youtube.com/@lyi> · 哔哩哔哩 <https://space.bilibili.com/4401694> |
+| Source video | <https://www.youtube.com/watch?v=WDQjRzVcX-A> |
+| Creator | YouTube <https://www.youtube.com/@lyi> · Bilibili <https://space.bilibili.com/4401694> |
 
 ## License
 
