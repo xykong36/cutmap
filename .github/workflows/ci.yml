@@ -48,7 +48,7 @@ jobs:
           printf '1\n00:00:00,000 --> 00:00:04,000\nhello grock\n\n2\n00:00:04,000 --> 00:00:08,000\ndeep sick\n' > sample.srt
           cutmap sample.mp4 --srt sample.srt
           test -f sample/index.json
-          test -f sample/浏览.html
+          test -f sample/browse.html
           test -f sample/broll/broll.json
           python - <<'PY'
           import json
@@ -57,7 +57,7 @@ jobs:
           assert any(f['subtitle'] for f in idx['frames']), "字幕未对齐到任何画面"
           br = json.load(open('sample/broll/broll.json'))
           assert br['count'] >= 1, "未切出任何 B-roll 片段"
-          html = open('sample/浏览.html', encoding='utf-8').read()
+          html = open('sample/browse.html', encoding='utf-8').read()
           assert 'Grok' in html, "术语归一化未生效"
           print(f"✓ 画面 {idx['frame_count']} 个, B-roll {br['count']} 段")
           PY
