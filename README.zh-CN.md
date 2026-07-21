@@ -66,7 +66,7 @@ cp -r cutmap/skills/cutmap ~/.claude/skills/
 pip install cutmap
 brew install ffmpeg                # macOS（Linux: apt install ffmpeg）
 
-cutmap 视频.mp4 --srt 字幕.srt      # 或直接 cutmap 视频.mp4（自动找同名 .srt）
+cutmap video.mp4 --srt subtitle.srt  # 或直接 cutmap video.mp4（自动找同名 .srt）
 open 视频/browse.html              # ← 用浏览器打开这个
 ```
 
