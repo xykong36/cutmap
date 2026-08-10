@@ -90,12 +90,12 @@ def _cut(video: str, start: float, dur: float, out: str, fmt: str) -> None:
     ff = util.ffmpeg()
     common = [ff, "-v", "error", "-ss", f"{start:.2f}", "-t", f"{dur:.2f}", "-i", video]
     if fmt == "mp4":
-        cmd = common + ["-an", "-vf", "scale=480:-1", "-c:v", "libx264", "-crf", "28",
+        cmd = common + ["-an", "-vf", "scale=480:-2", "-c:v", "libx264", "-crf", "28",
                         "-preset", "veryfast", "-movflags", "+faststart", "-y", out]
     elif fmt == "webp":
-        cmd = common + ["-vf", "fps=12,scale=480:-1", "-loop", "0", "-q:v", "70", "-y", out]
+        cmd = common + ["-vf", "fps=12,scale=480:-2", "-loop", "0", "-q:v", "70", "-y", out]
     else:  # gif —— 体积约为 mp4 的 24 倍且只有 256 色，仅在需要贴进聊天/笔记时用
-        cmd = common + ["-vf", "fps=10,scale=480:-1,split[a][b];[a]palettegen[p];"
+        cmd = common + ["-vf", "fps=10,scale=480:-2,split[a][b];[a]palettegen[p];"
                               "[b][p]paletteuse", "-y", out]
     subprocess.run(cmd, check=False)
 
